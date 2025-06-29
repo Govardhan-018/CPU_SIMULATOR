@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enter Process Details</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="container">
     <h1>Enter Process Details</h1>
@@ -16,7 +18,7 @@
       <input type="number" id="priority" placeholder="Priority" required>
     </div>
     <button onclick="addProcess()">+ Add Process</button>
-    
+
     <table id="processTable">
       <thead>
         <tr>
@@ -24,13 +26,13 @@
           <th>Arrival Time</th>
           <th>Burst Time</th>
           <th>Priority</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody id="processTableBody"></tbody>
     </table>
     <div>
-      <label>Time Quantum (for Round Robin): </label>
-      <input type="number" id="quantum" placeholder="Time Quantum" value="4">
+      <input type="hidden" id="quantum" placeholder="Time Quantum" value="4">
     </div>
     <button onclick="submitProcesses()">Submit</button>
   </div>
@@ -56,15 +58,21 @@
     function updateTable() {
       const tbody = document.getElementById('processTableBody');
       tbody.innerHTML = '';
-      processes.forEach(proc => {
+      processes.forEach((proc, idx) => {
         const row = `<tr>
           <td>${proc.id}</td>
           <td>${proc.arrival}</td>
           <td>${proc.burst}</td>
           <td>${proc.priority}</td>
+          <td><button onclick="deleteProcess(${idx})" style="color:#fff;background:#e74c3c;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;">Delete</button></td>
         </tr>`;
         tbody.innerHTML += row;
       });
+    }
+    function deleteProcess(idx) {
+      processes.splice(idx, 1);
+      sessionStorage.setItem('processes', JSON.stringify(processes));
+      updateTable();
     }
     function submitProcesses() {
       const quantum = parseInt(document.getElementById('quantum').value);
@@ -78,4 +86,5 @@
     window.onload = updateTable;
   </script>
 </body>
+
 </html>

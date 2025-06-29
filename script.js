@@ -4,6 +4,10 @@ const processes = JSON.parse(sessionStorage.getItem('processes') || '[]');
 const quantum = parseInt(sessionStorage.getItem('quantum') || '4', 10);
 const cpuLimit = parseInt(sessionStorage.getItem('cpuLimit') || '10', 10);
 
+function saveProcesses(newProcesses) {
+  sessionStorage.setItem('processes', JSON.stringify(newProcesses));
+}
+
 function validateProcesses(procs) {
   if (!procs?.length) {
     return { isValid: false, error: "No processes available to schedule." };
@@ -139,6 +143,35 @@ function displayResult({ title, description, gantt, rows, avgWT, avgTAT, timeCom
     <p><strong>Completed Processes:</strong> ${completed?.length ? completed.map(id => `P${id}`).join(', ') : 'None'}</p>
     <p><strong>Remaining Processes:</strong> ${remaining?.length ? remaining.map(id => `P${id}`).join(', ') : 'None'}</p>
   `;
+}
+
+function renderProcessList() {
+  const listDiv = document.getElementById('processList');
+  if (!listDiv) return;
+  if (!processes.length) {
+    listDiv.innerHTML = '<p>No processes added.</p>';
+    return;
+  }
+  listDiv.innerHTML = `<table><thead><tr><th>ID</th><th>Arrival</th><th>Burst</th><th>Priority</th><th>Delete</th></tr></thead><tbody>${processes.map((proc, idx) => `
+    <tr>
+      <td>P${proc.id}</td>
+      <td>${proc.arrival}</td>
+      <td>${proc.burst}</td>
+      <td>${proc.priority}</td>
+      <td><button onclick="deleteProcess(${idx})" style="color:#fff;background:#e74c3c;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;">Delete</button></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+function deleteProcess(idx) {
+  processes.splice(idx, 1);
+  saveProcesses(processes);
+  renderProcessList();
+}
+
+function addProcess(proc) {
+  processes.push(proc);
+  saveProcesses(processes);
+  renderProcessList();
 }
 
 // --- SCHEDULING ALGORITHMS ---
@@ -350,3 +383,7 @@ function rr() {
     timeComplexity: "O(T) where T is the total execution time"
   };
 }
+
+window.renderProcessList = renderProcessList;
+window.deleteProcess = deleteProcess;
+window.addProcess = addProcess;
