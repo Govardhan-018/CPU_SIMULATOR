@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Process Details</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Enter Process Details</h1>
+    <div class="input-group">
+      <input type="number" id="id" placeholder="Process ID" required>
+      <input type="number" id="arrival" placeholder="Arrival Time" required>
+      <input type="number" id="burst" placeholder="Burst Time" required>
+      <input type="number" id="priority" placeholder="Priority" required>
+    </div>
+    <button onclick="addProcess()">+ Add Process</button>
+    
+    <table id="processTable">
+      <thead>
+        <tr>
+          <th>Process ID</th>
+          <th>Arrival Time</th>
+          <th>Burst Time</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody id="processTableBody"></tbody>
+    </table>
+    <div>
+      <label>Time Quantum (for Round Robin): </label>
+      <input type="number" id="quantum" placeholder="Time Quantum" value="4">
+    </div>
+    <button onclick="submitProcesses()">Submit</button>
+  </div>
+  <script>
+    let processes = JSON.parse(sessionStorage.getItem('processes') || '[]');
+    function addProcess() {
+      const id = parseInt(document.getElementById('id').value);
+      const arrival = parseInt(document.getElementById('arrival').value);
+      const burst = parseInt(document.getElementById('burst').value);
+      const priority = parseInt(document.getElementById('priority').value);
+      if (isNaN(id) || isNaN(arrival) || isNaN(burst) || isNaN(priority) || arrival < 0 || burst <= 0) {
+        alert('Please enter valid process details (non-negative arrival, positive burst).');
+        return;
+      }
+      processes.push({ id, arrival, burst, priority });
+      sessionStorage.setItem('processes', JSON.stringify(processes));
+      updateTable();
+      document.getElementById('id').value = '';
+      document.getElementById('arrival').value = '';
+      document.getElementById('burst').value = '';
+      document.getElementById('priority').value = '';
+    }
+    function updateTable() {
+      const tbody = document.getElementById('processTableBody');
+      tbody.innerHTML = '';
+      processes.forEach(proc => {
+        const row = `<tr>
+          <td>${proc.id}</td>
+          <td>${proc.arrival}</td>
+          <td>${proc.burst}</td>
+          <td>${proc.priority}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+    function submitProcesses() {
+      const quantum = parseInt(document.getElementById('quantum').value);
+      if (isNaN(quantum) || quantum <= 0) {
+        alert('Please enter a valid time quantum (positive number).');
+        return;
+      }
+      sessionStorage.setItem('quantum', quantum);
+      window.location.href = 'result.html';
+    }
+    window.onload = updateTable;
+  </script>
+</body>
+</html>

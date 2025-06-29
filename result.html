@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Scheduling Algorithm</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1>Choose Scheduling Algorithm</h1>
+
+    <div class="buttons">
+      <button onclick="showVariants('fcfs')">FCFS</button>
+      <button onclick="showVariants('sjf')">SJF</button>
+      <button onclick="showVariants('priority')">Priority</button>
+      <button onclick="showVariants('rr')">Round Robin</button>
+    </div>
+
+    <!-- Inputs -->
+    <div class="input-group" style="margin-top: 25px;">
+      <label for="cpuLimit">CPU Time Limit (units):</label>
+      <input type="number" id="cpuLimit" min="1" value="10" onchange="updateLimits()" />
+
+      <label for="quantum">Quantum Time (for RR):</label>
+      <input type="number" id="quantum" min="1" value="4" onchange="updateLimits()" />
+    </div>
+
+    <!-- Variants will be injected here -->
+    <div id="variants" class="buttons"></div>
+
+    <!-- Output -->
+    <div id="result">
+      <h3>Gantt Chart</h3>
+      <div id="ganttChart" class="gantt-chart"></div>
+      <div id="ganttTimelines" class="gantt-timelines"></div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="buttons">
+      <button onclick="window.location.href='comparison.html'">Compare All Algorithms</button>
+      <button onclick="window.location.href='input.html'">Back</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script>
+    function updateLimits() {
+      const cpu = parseInt(document.getElementById('cpuLimit').value) || 10;
+      const quantum = parseInt(document.getElementById('quantum').value) || 4;
+      sessionStorage.setItem('cpuLimit', cpu);
+      sessionStorage.setItem('quantum', quantum);
+    }
+
+    // Load saved values on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const cpu = sessionStorage.getItem('cpuLimit') || '10';
+      const quantum = sessionStorage.getItem('quantum') || '4';
+      document.getElementById('cpuLimit').value = cpu;
+      document.getElementById('quantum').value = quantum;
+    });
+  </script>
+</body>
+
+</html>
