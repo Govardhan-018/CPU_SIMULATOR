@@ -83,6 +83,7 @@ Then reload the page.
 project-root/
 ├── index.html
 ├── input.html
+├── comparison.html
 ├── result.html
 ├── style.css
 ├── script.js         # Contains all optimized scheduling logic
